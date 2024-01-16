@@ -1,8 +1,8 @@
 # xcopen
 This shell-based script helps you run your favorite project via the Xcode app in a fast way.\
-The main idea of it is entering a simple one command in the terminal for the magic.
+The main idea of it is entering a simple one command in the terminal for the magic.\
 
-/Assets/intro.png
+![](/Assets/Intro.png)
 
 ## Feature list:
 - Running a project with one simple command in a terminal
@@ -21,7 +21,7 @@ The main idea of it is entering a simple one command in the terminal for the mag
 5. Choose 2nd option in the main menu of script.
 6. Set a path with a project. Just enter it or find the project folder and use your mouse to move it to the terminal.
 7. Magic. 
-<img src="https://media.giphy.com/media/Z3VgQu8hkVeB1bakS9/giphy.gif" width="170" height="110"/>
+<img src="https://media.giphy.com/media/Z3VgQu8hkVeB1bakS9/giphy.gif" width="180" height="110"/>
 
 ## Usage:
 All subsequent launches might be performed with a short global alias.\
