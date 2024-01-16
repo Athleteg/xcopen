@@ -38,11 +38,11 @@ For running a project in a fast way just enter **`% xcopen -1`** *(this option w
 Also, a script sets an alias and a path you specified behind a script (automatically).\
 All that is required from you is to set a path of a project via the 2nd option in the main menu of a script or with `% xcopen -2`.
 
-You might check all actual script data with such options as `-a`, -`e`:\
+You might check all actual script data with such options as `-a` for alias, -`e` for env:\
 `% xcopen -a`, `% xcopen -e` OR combine them `% xcopen -ae`.
 
 In case you would like to delete a script from your Mac - use `-d` option before.\
-*(It implies that all script data will be removed from a `.zshrc` file.)*
+*(It implies that all script data will be removed from a `.zshrc` file.)*\
 `% xcopen -d`.
 
 > [!CAUTION]
