@@ -13,7 +13,7 @@ The main idea of it is entering a simple one command in the terminal for the mag
 - Maintenances a deleting of all script data simply with one command
 
 ## Installation:
-1. Download the shell script.
+1. Download this repo.
 2. In the terminal change the directory on a script folder.
 3. Set a permission (eg. `% chmod 500 xcopen`).
 4. The first launch must be performed in the current shell environment with the (.) command\
