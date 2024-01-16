@@ -1,6 +1,6 @@
 # xcopen
 This simple shell script helps you run your favorite project via the Xcode app in a fast way.\
-The main idea of it is entering a simple one command in the terminal for the magic.\
+The main idea of it is entering a simple one command in the terminal for magic.
 
 ![](/Assets/Intro.png)
 
