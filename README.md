@@ -50,7 +50,7 @@ In case you would like to delete a script from your Mac - use `-d` option before
 >  The script automatically will change an alias path in the `.zshrc` file for the sake of usage of `% xcopen`.)*
 
 ## License:
-[MIT license.](https://github.com/ArtemUstinov/xcopen/blob/main/LICENSE)
+[MIT license.](https://github.com/Athleteg/xcopen/blob/main/LICENSE)
 
 
 ## Bottom line:
@@ -58,6 +58,6 @@ In case you would like to delete a script from your Mac - use `-d` option before
 If you are a bit lazy, then try to use it :)\
 I hope it helps you to avoid your routine job.
 
-In case of any questions, feedback, or suggestions, reach me by any comfy approach (see [profile](https://github.com/ArtemUstinov))
+In case of any questions, feedback, or suggestions, reach me by any comfy approach (see [profile](https://github.com/Athleteg))
 
 Enjoy it :)
