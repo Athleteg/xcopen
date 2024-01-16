@@ -58,6 +58,6 @@ In case you would like to delete a script from your Mac - use `-d` option before
 If you are a bit lazy, then try to use it :)\
 I hope it helps you to avoid your routine job.
 
-In case of any questions, feedback, or suggestions, reach me by any comfy approach (eg. [twitter](https://twitter.com/tourer_dev))
+In case of any questions, feedback, or suggestions, reach me by any comfy approach (eg. [Github](https://github.com/ArtemUstinov))
 
 Enjoy it :)
