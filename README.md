@@ -6,6 +6,7 @@ The main idea of it is entering a simple one command in the terminal for magic.
 
 ## Feature list:
 - Running a project with one simple command in a terminal
+- There is no need to always go into the project folder
 - Keeps your favorite path to a project until you change or remove it
 - Sets all necessary data for script automatically (env property and alias to `.zshrc` file)
 - Highlights tips during the running of a script
