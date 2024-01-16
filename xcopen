@@ -1,0 +1,345 @@
+#!/bin/zsh
+
+# Described a case when using old macOS versions for bash. The newest versions use zsh. 
+# https://www.reddit.com/r/MacOS/comments/t90qs1/can_someone_help_explain_the_differences_between/
+
+
+############################################################
+# PROPERTIES:
+############################################################ 
+is_path_wrong="false"
+
+# Text settings:
+CLEAR="\x1B[0m"
+BOLD="\x1B[1m"
+UNDERLINE="\x1B[4m"
+ITALIC="\x1B[3m"
+
+RED="\x1B[31m"
+YELLOW="\x1B[33m"
+
+
+############################################################
+# MAIN FUNCTIONS:
+############################################################
+open_file () {
+	if ( ! grep -q "XCOPEN_SCRIPT_PROJECT_PATH" ~/.zshrc ); then
+		echo "\n${RED}First of all, you should set a path. Please, choose 2nd option while running a script.${CLEAR}"
+		return 1
+	fi
+
+	xcworkspace=""
+	xcodeproj=""
+
+	for file in $XCOPEN_SCRIPT_PROJECT_PATH*; do
+		if [[ $file =~ \.xcworkspace$ ]]; then
+			xcworkspace=$file
+			break
+		elif [[ $file =~ \.xcodeproj$ ]]; then
+			xcodeproj=$file
+		fi
+	done
+
+	echo "Opening..."
+	if [[ ! -z $xcworkspace ]]; then
+		open $xcworkspace
+	elif [[ ! -z $xcodeproj ]]; then
+		open $xcodeproj
+	else
+		echo "\n${RED}Oops, probably, files for such extensions as .xcodeproj and .xcworkspace do not exist.${CLEAR}"
+		echo "${ITALIC}(Please, check your directory. If needed, set a new path by using the 2nd option in the script.)${CLEAR}"
+		return 1
+	fi
+}
+
+change_path () {
+	echo "\nPlease, enter the full path of the project ${ITALIC}(eg. % ~/home/developer/nameOfYourProject)${CLEAR}:"
+	read projectPath
+	check_project_dir $projectPath
+}
+
+# Opens file optionally.
+open_file_opt () {
+	echo "\nWould you like to open a file now?"
+	echo "Enter y/n:\n"
+	read answer
+
+	if [[ $answer == y ]]; then
+		open_file
+	else 
+		return 0
+	fi
+}
+
+# Sets alias to ~/.zshrc
+set_alias_if_needed () {
+	old_alias="alias $(alias xcopen)"
+	new_alias="alias xcopen='source $PWD/./xcopen'"
+
+	### Deleting previous alias if a new path is different.
+	if ( grep -q "^alias xcopen=" ~/.zshrc ) && [[ -e xcopen ]] && [[ $old_alias != $new_alias ]]; then
+		echo "\nLooks like you have changed the path of a script."
+
+		delete_alias_if_needed
+		perform_sed_del_empty_lines
+	fi
+
+	### Set a new alias
+	if ( ! grep -q "^alias xcopen=" ~/.zshrc ); then
+		echo "\nalias xcopen='source $PWD/./xcopen'\n" >> ~/.zshrc
+
+		### accept new changes in ~/.zshrc
+		source ~/.zshrc
+
+		perform_sed_del_empty_lines
+		
+		echo "\nThe new alias $(alias xcopen) was created in ~/.zshrc"
+		echo "Since that time, simply enter \`% ${BOLD}xcopen${CLEAR}\` without any dots or slash before."	
+	fi
+}
+
+# Entry point function.
+entry_point () {
+	if [[ $lookedType == 1 ]]; then
+		open_file
+	elif [[ $lookedType == 2 ]]; then
+		change_path
+
+		if [[ $is_path_wrong == "false" ]]; then
+			open_file_opt
+		fi
+	else 
+		echo "${RED}Unknown option. Try running the script again.${CLEAR}"
+	fi
+}
+
+
+############################################################
+# HELPER FUNCTIONS:
+############################################################ 
+# Checks project path on existing executable file with extension either .xcodeproj or .xcworkspace 
+check_project_dir () {
+	project_path=$1/
+
+	if [[ ! -d $1 ]]; then
+		echo "\n${RED}Error: it is not a correct path.${CLEAR}"
+		is_path_wrong="true"
+		return 1
+	fi
+
+	for file in $1/*; do
+		if [[ $file =~ \.xcworkspace$ ]]; then 
+			echo "\nThe path is acceptable as: $1/"
+			write_env $project_path
+			return 0
+		elif [[ $file =~ \.xcodeproj$ ]]; then 
+			echo "\nThe path is acceptable as: $1/"
+			write_env $project_path
+			return 0	
+		fi		
+	done
+
+	echo "\nThe final directory ($1) should contain at least one file extension as ${UNDERLINE}.xcodeproj${CLEAR} OR ${UNDERLINE}.xcworkspace${CLEAR}"
+	echo "Please, check your directory for the existence of one of the mentioned files. Then, run the script again."	
+
+	is_path_wrong="true"
+}
+
+# Sets a new environment to one of the main zsh files: ~/.zshrc
+write_env () {
+	delete_env_if_needed
+
+	echo "Writing new environment to ~/.zshrc"
+	### Overwriting the new environment with path to the ~/.zshrc
+	echo "\nexport XCOPEN_SCRIPT_PROJECT_PATH=$1\n" >> ~/.zshrc
+
+	### accept new changes in ~/.zshrc
+	source ~/.zshrc
+
+	perform_sed_del_empty_lines
+
+	is_path_wrong="false"
+
+	echo "New environment has been created in ~/.zshrc:"
+	echo XCOPEN_SCRIPT_PROJECT_PATH=$1
+}
+
+# Unseting an environment if it is required.
+delete_env_if_needed () {
+	if ( grep -q "XCOPEN_SCRIPT_PROJECT_PATH" ~/.zshrc ); then
+		echo "Removing previously determined path: $XCOPEN_SCRIPT_PROJECT_PATH for XCOPEN_SCRIPT_PROJECT_PATH"
+
+		prev_wrapped_env="export XCOPEN_SCRIPT_PROJECT_PATH=$XCOPEN_SCRIPT_PROJECT_PATH"
+		perform_sed_subst $prev_wrapped_env
+
+		### Unseting (deleting) environment from env
+		unset XCOPEN_SCRIPT_PROJECT_PATH
+	fi
+}
+
+# Unseting an alias if it is required
+delete_alias_if_needed () {
+	if ( grep -q "^alias xcopen=" ~/.zshrc ); then
+		echo "Removing previously determined alias: $(alias xcopen)"
+
+		prev_wrapped_alias="alias $(alias xcopen)"
+		perform_sed_subst $prev_wrapped_alias
+
+		### Unseting (deleting) alias
+		unalias xcopen
+	fi
+}
+
+# Substitutes (removing) previously determined env or alias within ~/.zshrc
+perform_sed_subst () {
+	### deleting the previous version of the env or alias in ~/.zshrc
+	### according to the different versions of the sed command on macOS and Linux: https://singhkays.com/blog/sed-error-i-expects-followed-by-text/
+	sed -i '' "s|$1||g" ~/.zshrc
+}
+
+# Removes all empty lines within ~/.zshrc
+perform_sed_del_empty_lines () {
+	### deleting the empty lines in ~/.zshrc
+	sed -i '' "/^$/d" ~/.zshrc 	
+}
+
+# Shows env if it exists.
+show_active_env () {
+	if ( grep -q "^export XCOPEN_SCRIPT_PROJECT_PATH=" ~/.zshrc ); then
+		echo "\nenv in .zshrc is:"
+		echo "${YELLOW}XCOPEN_SCRIPT_PROJECT_PATH=$XCOPEN_SCRIPT_PROJECT_PATH${CLEAR}\n"
+	else
+		echo "\n${UNDERLINE}The env property is not set within a .zshrc file. Please, set it by choosing the${CLEAR} ${BOLD}2nd option${CLEAR} ${UNDERLINE}in the script main menu.${CLEAR}\n"
+	fi
+}
+
+# Shows alias if it exists.
+show_active_alias () {
+	if ( grep -q "^alias xcopen=" ~/.zshrc ); then
+		echo "\nalias in .zshrc is:"
+		echo "${YELLOW}$(alias xcopen)${CLEAR}\n"
+	else
+		echo "\n${UNDERLINE}The alias is not set within a .zshrc file. Please, restart the script for installing a new one.${CLEAR}"
+		echo "\nEnter: % source ./xcopen -h\n"
+	fi	
+}
+
+# Deletes env and alias
+delete_env_alias () {
+	delete_env_if_needed
+	delete_alias_if_needed
+	perform_sed_del_empty_lines
+
+	### accept new changes in ~/.zshrc
+	source ~/.zshrc
+
+	echo "\nJust run a script again and the ${BOLD}xcopen${CLEAR} shortcut will be set automatically."
+}
+
+
+############################################################
+# HELP MENU:
+############################################################
+show_help_menu () {
+	echo
+   	echo "${BOLD}What it is:${CLEAR}"
+	echo "           \`xcopen\` is a shell-based script to run your program in Xcode via the terminal."
+	echo "           The main idea is to simplify routine jobs."
+	echo
+	echo "${BOLD}Behind a script:${CLEAR}"
+	echo "           The script always looks for a file with \`.xcworkspace\` extension, ${UNDERLINE}firstly${CLEAR}."
+	echo "           If it does not exist, then the script looks for a file with a \`.xcodeproj\` extension."
+	echo
+	echo "           Running the script with a \`-1\` option is possible only in case one of these mentioned files exists."
+	echo
+   	echo "${BOLD}How to use it:${CLEAR}"
+	echo "           Just enter in terminal such command as: \`% ${BOLD}xcopen${CLEAR}\`"
+	echo
+	echo "           If you run a script you can find the 2 main options."
+	echo
+	echo "           By using 1st option a script runs your project via Xcode."
+	echo "           By using 2nd option a script sets the path of your project to ~/.zshrc file."
+	echo "           ${ITALIC}(Do not worry, the script creates a \`.zshrc\` file if it does not exist.)${CLEAR}"
+	echo
+	echo "           You can also run a script shortly using existing parameters."
+	echo "           For instance, \`${BOLD}% xcopen -1${CLEAR}\` opens Xcode with a determined path, if it has been set."
+	echo
+  	echo "${BOLD}Syntax:${CLEAR}"
+	echo "           % xcopen -[1|2|a|d|e|h]"
+   	echo
+  	echo "${BOLD}Options:${CLEAR}"
+  	echo "   -1      Runs your project with a determined path via Xcode."
+  	echo "   -2      Changes existing or set a new path of your project to ~/.zshrc file."
+	echo "   -a      Shows active alias if it exists."
+	echo "   -d      Deletes active env and alias if they exist."
+	echo "   -e      Shows active env if it exists."
+  	echo "   -h      Helps to find needed options and get a purpose of the script."
+ 	echo
+	echo "${BOLD}Tips:${CLEAR}"
+	echo "           - Use \`${BOLD}% source ./xcopen${CLEAR}\` at the first launch."
+	echo "             All subsequent times simply enter: \`${BOLD}xcopen${CLEAR}\` without any dots and slashes."
+	echo
+	echo "           - In case of \`xcopen\` does not work, just run a script as mentioned above (via source cmd)."
+	echo
+	echo "           - Use \`% xcopen -1\` for faster launch."
+	echo "             ${ITALIC}(Also, you might run a script quickly with all the listed options.)${CLEAR}"
+	echo
+	echo "           - Use \`% xcopen -d\` before deleting a script from your mac."
+	echo "             ${ITALIC}(This option removes all support data of a script.)${CLEAR}"
+	echo
+	echo "${BOLD}Support:${CLEAR}"
+	echo "           TODO  Git: https://github.com/ArtemUstinov"
+	echo
+}
+
+# Handles arguments for script in CLI.
+# https://www.redhat.com/sysadmin/arguments-options-bash-scripts
+# https://www.computerhope.com/unix/bash/getopts.htm
+handle_args () {
+	while getopts ":12adeh" option; do
+		case $option in
+			1) ### Perform open cmd.
+				open_file
+				;;
+			2) ### Perform change path cmd.
+				change_path
+				
+				if [[ $is_path_wrong == "false" ]]; then
+					open_file_opt
+				fi
+				;;
+			a) ### Display active alias
+				show_active_alias
+				;;
+			d) ### Delete env & alias
+				delete_env_alias
+				;;
+			e) ### Display active env
+				show_active_env
+				;;
+			h) ### Display help cmd
+				show_help_menu
+				;;
+			*) ### Unknown cmd
+				echo "${RED}Error: unknown parameter -${OPTARG}${CLEAR}"
+				;;
+		esac
+	done
+}
+
+
+############################################################
+# MAIN:
+############################################################
+set_alias_if_needed
+
+if [[ -z $1 ]]; then
+	### Runing without args.
+	echo "\nWhat would you like to..."
+	echo "Enter num 1/2: \n 1. Open project \n 2. Change/set path\n"
+	read lookedType
+	entry_point
+else 
+	### Runing with args.
+	handle_args $1
+fi
