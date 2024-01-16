@@ -1,5 +1,5 @@
 # xcopen
-This simple shell script helps you run your favorite project via the Xcode app in a fast way.\
+This simple shell script helps you run your favorite project via the Xcode app in the fastest way.\
 The main idea of it is entering a simple one command in the terminal for magic.
 
 ![](/Assets/Intro.png)
@@ -33,7 +33,7 @@ Besides, a script supports 6 options.
 
 Use **`% xcopen -h`** to display the help menu where you will find all options with their meaning.
 
-For running a project in a fast way just enter **`% xcopen -1`** *(this option works only in case you set a path for a project).*
+To run a project in the fastest way just enter **`% xcopen -1`** *(this option works only in case you set a path for a project).*
 
 Also, a script sets an alias and a path you specified behind a script (automatically).\
 All that is required from you is to set a path of a project via the 2nd option in the main menu of a script or with `% xcopen -2`.
