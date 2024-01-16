@@ -288,7 +288,7 @@ show_help_menu () {
 	echo "             ${ITALIC}(This option removes all support data of a script.)${CLEAR}"
 	echo
 	echo "${BOLD}Support:${CLEAR}"
-	echo "           For any details, please, follow to: ${ITALIC}https://github.com/ArtemUstinov/xcopen${CLEAR}"
+	echo "           For any details, please, follow to: ${ITALIC}https://github.com/Athleteg/xcopen${CLEAR}"
 	echo
 }
 
