@@ -1,11 +1,11 @@
 # xcopen
-This simple shell script helps you run your favorite project via the Xcode app in the fastest way.\
+This simple shell script helps you open your favorite project via the Xcode app in the fastest way.\
 The main idea of it is entering a simple one command in the terminal for magic.
 
 ![](/Assets/Intro.png)
 
 ## Feature list:
-- Running a project with one simple command in a terminal
+- Opening a project with one simple command in a terminal
 - There is no need to always go into the project folder
 - Keeps your favorite path to a project until you change or remove it
 - Sets all necessary data for script automatically (env property and alias to `.zshrc` file)
@@ -34,7 +34,7 @@ Besides, a script supports 6 options.
 
 Use **`% xcopen -h`** to display the help menu where you will find all options with their meaning.
 
-To run a project in the fastest way just enter **`% xcopen -1`** *(this option works only in case you set a path for a project).*
+To open a project in the fastest way just enter **`% xcopen -1`** *(this option works only in case you set a path for a project).*
 
 Also, a script sets an alias and a path you specified behind a script (automatically).\
 All that is required from you is to set a path of a project via the 2nd option in the main menu of a script or with `% xcopen -2`.
@@ -56,8 +56,8 @@ In case you would like to delete a script from your Mac - use `-d` option before
 
 ## Bottom line:
 
-If you are a bit lazy dev, then try to use it :)\
-I hope it helps you to avoid your routine job.
+If you are a bit lazy dev or would like to automate some processes, then try to use it :)\
+I hope it helps you to avoid your routine actions.
 
 In case of any questions, feedback, or suggestions, reach me by any comfy approach (see [profile](https://github.com/Athleteg))
 
