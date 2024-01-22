@@ -1,5 +1,5 @@
 # xcopen
-This simple `Shell` script helps you in the fastest way open your favorite project in the Xcode app.\
+This simple 'Shell' script helps you in the fastest way open your favorite project in the Xcode app.\
 The main idea of it is entering a simple one command in the terminal for magic.
 
 ![](/Assets/Intro.png)
