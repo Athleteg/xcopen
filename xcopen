@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+# Author: Athleteg 
+# Copyright (c) https://github.com/Athleteg/xcopen/blob/main/LICENSE
+
+
+
 # Described a case when using old macOS versions for bash. The newest versions use zsh. 
 # https://www.reddit.com/r/MacOS/comments/t90qs1/can_someone_help_explain_the_differences_between/
 
